@@ -420,27 +420,51 @@ p {
 
 .authority-card:hover {
   transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 15px 30px rgba(11, 37, 78, 0.08);
   border-color: var(--secondary-color);
 }
 
 .authority-icon {
-  width: 50px;
-  height: 50px;
-  background-color: var(--bg-secondary);
+  width: 60px;
+  height: 60px;
+  background-color: var(--primary-color);
   color: var(--secondary-color);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   border-radius: 4px;
   margin-bottom: 20px;
   transition: var(--transition);
 }
 
 .authority-card:hover .authority-icon {
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  transform: scale(1.05);
+}
+
+/* Callout Section Typography */
+.authority-callout-title {
+  font-family: var(--font-titles);
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--primary-color);
+  margin-bottom: 0;
+}
+
+@media (max-width: 991px) {
+  .authority-callout-title {
+    margin-bottom: 15px;
+  }
+}
+
+.authority-callout-text {
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  line-height: 1.7;
+  margin-bottom: 0;
 }
 
 .authority-card h3 {
@@ -972,12 +996,12 @@ p {
 
 /* Portfolio Filtering Animation Classes */
 .portfolio-item {
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease !important;
 }
 
 .portfolio-item.hidden {
-  opacity: 0;
-  transform: scale(0.8);
+  opacity: 0 !important;
+  transform: scale(0.8) !important;
   pointer-events: none;
 }
 
@@ -1064,21 +1088,21 @@ p {
 
 /* Cooled Down base paths */
 .path-base-dark {
-  stroke: #040e1b;
-  stroke-width: 5px;
+  stroke: #E2E8F0; /* Bright Silver/White engraving */
+  stroke-width: 6px;
   filter: url(#engrave-depth);
 }
 
 .path-base-gold {
-  stroke: #664f3d; /* dark oxidized gold */
-  stroke-width: 5px;
+  stroke: #C8A382; /* Bright Gold engraving */
+  stroke-width: 6px;
   filter: url(#engrave-depth);
 }
 
 /* Hot glowing paths that sit on top */
 .path-glow {
   stroke: #FFF6E8;
-  stroke-width: 4px;
+  stroke-width: 5px;
   filter: drop-shadow(0 0 3px #C8A382) drop-shadow(0 0 8px #C8A382);
 }
 
@@ -1094,6 +1118,8 @@ p {
 
 /* LASER text reveal spacing */
 .laser-text-gold {
+  fill: #C8A382;
+  filter: drop-shadow(0 0 3px rgba(200, 163, 130, 0.6));
   transition: opacity 1.2s ease, letter-spacing 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 

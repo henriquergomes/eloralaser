@@ -303,9 +303,9 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         },
         onComplete: () => {
-          // Cooldown glow path to simulated oxidation
+          // Cooldown glow path to simulated oxidation (keep partially glowing for high contrast)
           if (glowPath) {
-            gsap.to(glowPath, { opacity: 0.1, duration: 0.8 });
+            gsap.to(glowPath, { opacity: 0.65, duration: 0.8 });
           }
         }
       });
