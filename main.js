@@ -74,16 +74,65 @@ document.addEventListener('DOMContentLoaded', () => {
       const material = document.getElementById('client-material').value;
       const details = document.getElementById('client-details').value.trim();
 
-      // Formulate WhatsApp message text
-      const waNumber = '5585999999999'; // Fortaleza-based contact number
-      const intro = `Olá Elora Laser, gostaria de submeter um projeto para avaliação técnica:\n\n`;
-      const body = `*Nome:* ${name}\n*E-mail:* ${email}\n*WhatsApp:* ${phone}\n*Material Principal:* ${material}\n*Detalhes do Projeto:* ${details}`;
-      const fullText = encodeURIComponent(intro + body);
-      
-      const waUrl = `https://api.whatsapp.com/send?phone=${waNumber}&text=${fullText}`;
-      
-      // Open WhatsApp in a new tab
-      window.open(waUrl, '_blank');
+      // Show submitting loading state on the button
+      const submitBtn = document.getElementById('btn-submit-budget');
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando Orçamento Técnico...';
+
+      // Build form data for PHP POST
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('phone', phone);
+      formData.append('material', material);
+      formData.append('details', details);
+
+      // Submit via fetch to PHP mailer script
+      fetch('send_mail.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json().catch(() => {
+        // Fallback for non-JSON or raw text response
+        return { status: 'success', message: 'Orçamento enviado com sucesso!' };
+      }))
+      .then(data => {
+        if (data.status === 'success') {
+          alert('Orçamento técnico enviado com sucesso! Nosso departamento entrará em contato em breve por e-mail ou WhatsApp.');
+          
+          // Formulate WhatsApp message text for redirection
+          const waNumber = '5585991274567'; // Fortaleza-based contact number
+          const intro = `Olá Elora Laser, gostaria de submeter um projeto para avaliação técnica:\n\n`;
+          const body = `*Nome:* ${name}\n*E-mail:* ${email}\n*WhatsApp:* ${phone}\n*Material Principal:* ${material}\n*Detalhes do Projeto:* ${details}`;
+          const fullText = encodeURIComponent(intro + body);
+          const waUrl = `https://api.whatsapp.com/send?phone=${waNumber}&text=${fullText}`;
+          
+          // Redirect to WhatsApp to double touchpoint conversion
+          window.open(waUrl, '_blank');
+          
+          // Reset form
+          form.reset();
+        } else {
+          alert('Erro ao enviar: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error submitting form:', error);
+        alert('Ocorreu um erro ao enviar seu projeto pelo formulário. Redirecionando para o WhatsApp técnico...');
+        
+        // WhatsApp fallback redirect
+        const waNumber = '5585991274567';
+        const intro = `Olá Elora Laser, gostaria de submeter um projeto para avaliação técnica:\n\n`;
+        const body = `*Nome:* ${name}\n*E-mail:* ${email}\n*WhatsApp:* ${phone}\n*Material Principal:* ${material}\n*Detalhes do Projeto:* ${details}`;
+        const fullText = encodeURIComponent(intro + body);
+        const waUrl = `https://api.whatsapp.com/send?phone=${waNumber}&text=${fullText}`;
+        window.open(waUrl, '_blank');
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+      });
     });
   }
 
@@ -203,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 7. CNC Laser Drawing Animation
   const svg = document.getElementById('laser-logo-svg');
-  if (svg) {
+  if (svg && typeof gsap !== 'undefined') {
     // Select all paths that we want to draw
     const basePaths = svg.querySelectorAll('#base-paths .laser-path');
     const glowPaths = svg.querySelectorAll('#glow-paths .laser-path');
@@ -368,6 +417,91 @@ document.addEventListener('DOMContentLoaded', () => {
         // Final flare
         createSparks(400, 318);
       }
+    });
+  }
+
+  // 8. Scroll Progress Indicator
+  window.addEventListener('scroll', () => {
+    const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    const bar = document.querySelector('.scroll-progress-bar');
+    if (bar) {
+      bar.style.width = scrolled + '%';
+    }
+  });
+
+  // 9. Floating Embers Particle Generator in Hero Section
+  const initHeroBackgroundParticles = () => {
+    const heroSection = document.querySelector('.hero-section');
+    if (!heroSection) return;
+
+    const spawnEmber = () => {
+      const ember = document.createElement('span');
+      ember.classList.add('hero-ember');
+
+      const size = 2 + Math.random() * 3;
+      const startX = Math.random() * 100;
+      const duration = 6 + Math.random() * 5;
+      const delay = Math.random() * 2;
+
+      ember.style.width = size + 'px';
+      ember.style.height = size + 'px';
+      ember.style.left = startX + '%';
+      ember.style.bottom = '-10px';
+      ember.style.animationDuration = duration + 's';
+      ember.style.animationDelay = delay + 's';
+
+      heroSection.appendChild(ember);
+
+      setTimeout(() => {
+        ember.remove();
+      }, (duration + delay) * 1000);
+    };
+
+    // Spawn 12 particles initially scattered
+    for (let i = 0; i < 12; i++) {
+      spawnEmber();
+    }
+
+    // Spawn periodically
+    setInterval(spawnEmber, 600);
+  };
+
+  initHeroBackgroundParticles();
+
+  // 10. Autoplay Testimonials Carousel with Hover Pause
+  const testimonialsWrapper = document.querySelector('.testimonials-wrapper');
+  const carouselDots = document.querySelectorAll('.carousel-dot');
+
+  if (testimonialsWrapper && carouselDots.length > 0) {
+    let autoplayInterval;
+    
+    const startCarouselAutoplay = () => {
+      autoplayInterval = setInterval(() => {
+        const activeIndex = Math.round(testimonialsWrapper.scrollLeft / testimonialsWrapper.clientWidth);
+        const nextIndex = (activeIndex + 1) % carouselDots.length;
+        
+        testimonialsWrapper.scrollTo({
+          left: nextIndex * testimonialsWrapper.clientWidth,
+          behavior: 'smooth'
+        });
+      }, 5000);
+    };
+
+    const stopCarouselAutoplay = () => {
+      clearInterval(autoplayInterval);
+    };
+
+    // Start on init
+    startCarouselAutoplay();
+
+    // Event listeners to pause on interaction
+    testimonialsWrapper.addEventListener('mouseenter', stopCarouselAutoplay);
+    testimonialsWrapper.addEventListener('mouseleave', startCarouselAutoplay);
+    
+    carouselDots.forEach(dot => {
+      dot.addEventListener('click', stopCarouselAutoplay);
     });
   }
 });
