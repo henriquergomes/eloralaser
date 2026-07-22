@@ -656,8 +656,24 @@ p {
 }
 
 .faq-item {
-  border-bottom: 1px solid var(--border-color);
-  padding: 10px 0;
+  background-color: var(--bg-secondary);
+  border: 1.5px solid var(--border-color);
+  border-radius: 6px;
+  margin-bottom: 15px;
+  padding: 5px 12px;
+  transition: var(--transition);
+}
+
+.faq-item:hover {
+  border-color: var(--secondary-color);
+  box-shadow: 0 8px 20px rgba(11, 37, 78, 0.04);
+  transform: translateY(-2px);
+}
+
+.faq-item[open] {
+  background-color: var(--bg-primary);
+  border-color: var(--secondary-color);
+  box-shadow: 0 12px 30px rgba(11, 37, 78, 0.06);
 }
 
 .faq-item summary {
@@ -699,6 +715,8 @@ p {
   font-size: 0.95rem;
   color: var(--text-muted);
   line-height: 1.6;
+  border-top: 1px solid var(--border-color);
+  margin-top: 5px;
 }
 
 /* Section 7: Form & Close */
@@ -746,8 +764,8 @@ p {
 }
 
 .form-control-custom:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(11, 37, 78, 0.1);
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(200, 163, 130, 0.2);
 }
 
 /* Native Required validation styling using :user-invalid */
@@ -1361,5 +1379,42 @@ p {
   100% {
     transform: translateY(-85vh) translateX(-15px);
     opacity: 0;
+  }
+}
+
+/* Service Card Link Styles */
+.service-card-link {
+  font-family: var(--font-titles);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--secondary-color);
+  text-decoration: none;
+  margin-top: auto; /* Push link to bottom of flex-grow card content */
+  padding-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition);
+}
+
+.service-card-link i {
+  transition: transform 0.3s ease;
+}
+
+.service-card-link:hover {
+  color: var(--primary-color);
+}
+
+.service-card-link:hover i {
+  transform: translateX(5px);
+}
+
+/* Placa de Metal Responsiva no Mobile */
+@media (max-width: 576px) {
+  .metal-plate-container {
+    height: 250px;
+    padding: 10px;
   }
 }
