@@ -200,4 +200,174 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  // 7. CNC Laser Drawing Animation
+  const svg = document.getElementById('laser-logo-svg');
+  if (svg) {
+    // Select all paths that we want to draw
+    const basePaths = svg.querySelectorAll('#base-paths .laser-path');
+    const glowPaths = svg.querySelectorAll('#glow-paths .laser-path');
+    
+    // Prepare paths by setting dasharray and dashoffset
+    basePaths.forEach(path => {
+      const length = path.getTotalLength();
+      path.style.strokeDasharray = length;
+      path.style.strokeDashoffset = length;
+    });
+
+    glowPaths.forEach(path => {
+      const length = path.getTotalLength();
+      path.style.strokeDasharray = length;
+      path.style.strokeDashoffset = length;
+    });
+
+    // Particle Sparks System
+    const createSparks = (x, y) => {
+      const container = document.getElementById('sparks-container');
+      if (!container) return;
+
+      const sparkCount = 4 + Math.floor(Math.random() * 4);
+      for (let i = 0; i < sparkCount; i++) {
+        const spark = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        const size = 1.2 + Math.random() * 1.8;
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = 25 + Math.random() * 45;
+        
+        spark.setAttribute('cx', x);
+        spark.setAttribute('cy', y);
+        spark.setAttribute('r', size);
+        
+        const colors = ['#FFFFFF', '#FFE7C4', '#C8A382', '#FFAE5C'];
+        spark.setAttribute('fill', colors[Math.floor(Math.random() * colors.length)]);
+        spark.setAttribute('filter', 'drop-shadow(0 0 2px #C8A382)');
+        
+        container.appendChild(spark);
+        
+        gsap.to(spark, {
+          cx: x + Math.cos(angle) * velocity,
+          cy: y + Math.sin(angle) * velocity + (10 + Math.random() * 20),
+          opacity: 0,
+          scale: 0,
+          duration: 0.3 + Math.random() * 0.4,
+          ease: "power2.out",
+          onComplete: () => {
+            spark.remove();
+          }
+        });
+      }
+    };
+
+    // Timeline for CNC movement
+    const tl = gsap.timeline({
+      delay: 0.5,
+      onComplete: () => {
+        // Hide laser spot
+        gsap.to('#laser-spot', { opacity: 0, duration: 0.3 });
+      }
+    });
+
+    // Helper function to add a drawing step to the timeline
+    const addDrawingStep = (id, duration = 0.4) => {
+      const path = svg.querySelector(`#${id}`);
+      const glowPath = svg.querySelector(`#${id}-glow`);
+      if (!path) return;
+
+      const length = path.getTotalLength();
+      const startPt = path.getPointAtLength(0);
+
+      // 1. Move laser spot to path start
+      tl.to('#laser-spot', {
+        x: startPt.x,
+        y: startPt.y,
+        opacity: 1,
+        duration: 0.15,
+        ease: "power2.out",
+        onStart: () => {
+          gsap.set('#laser-spot', { opacity: 1 });
+        }
+      });
+
+      // 2. Draw path (animate strokeDashoffset to 0)
+      tl.to([path, glowPath], {
+        strokeDashoffset: 0,
+        duration: duration,
+        ease: "power1.inOut",
+        onUpdate: function() {
+          const progress = this.progress();
+          const currentLength = progress * length;
+          const pt = path.getPointAtLength(currentLength);
+          gsap.set('#laser-spot', { x: pt.x, y: pt.y });
+          
+          if (Math.random() < 0.6) {
+            createSparks(pt.x, pt.y);
+          }
+        },
+        onComplete: () => {
+          // Cooldown glow path to simulated oxidation
+          if (glowPath) {
+            gsap.to(glowPath, { opacity: 0.1, duration: 0.8 });
+          }
+        }
+      });
+    };
+
+    // Sequence execution:
+    // 1. Laser beam enters
+    addDrawingStep('laser-beam', 0.5);
+
+    // 2. Starburst (emblem center)
+    addDrawingStep('star-v', 0.25);
+    addDrawingStep('star-h', 0.25);
+    addDrawingStep('star-d1', 0.25);
+    addDrawingStep('star-d2', 0.25);
+    
+    // 3. Central circle arcs (letter O)
+    addDrawingStep('circle-l', 0.35);
+    addDrawingStep('circle-r', 0.35);
+
+    // 4. Letter E
+    addDrawingStep('e-top', 0.3);
+    addDrawingStep('e-mid', 0.25);
+    addDrawingStep('e-bot', 0.3);
+
+    // 5. Letter L
+    addDrawingStep('l-vert', 0.35);
+    addDrawingStep('l-bot', 0.25);
+
+    // 6. Letter R
+    addDrawingStep('r-vert', 0.35);
+    addDrawingStep('r-loop', 0.4);
+    addDrawingStep('r-leg', 0.3);
+
+    // 7. Letter A
+    addDrawingStep('a-left', 0.35);
+    addDrawingStep('a-right', 0.35);
+    
+    // Fade in inner A gold triangle
+    tl.to('#a-tri', {
+      opacity: 1,
+      duration: 0.5,
+      ease: "power2.out",
+      onStart: () => {
+        // Move spot to center of triangle for a tiny flare
+        gsap.set('#laser-spot', { x: 650, y: 228 });
+        createSparks(650, 228);
+      }
+    });
+
+    // 8. Bottom Details (Horizontal Lines)
+    addDrawingStep('line-l', 0.3);
+    addDrawingStep('line-r', 0.3);
+
+    // 9. Final text LASER reveal
+    tl.to('.laser-text-gold', {
+      opacity: 1,
+      duration: 0.8,
+      onStart: () => {
+        document.querySelector('.laser-text-gold').classList.add('revealed');
+        // Final flare
+        createSparks(400, 318);
+      }
+    });
+  }
 });

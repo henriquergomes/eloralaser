@@ -66,8 +66,9 @@
     <div class="hero-bg"></div>
     <div class="hero-overlay"></div>
     <div class="container hero-content">
-      <div class="row align-items-center">
-        <div class="col-lg-10 offset-lg-1 text-center text-lg-start">
+      <div class="row align-items-center g-5">
+        <!-- Coluna Esquerda: Texto e CTA -->
+        <div class="col-lg-6 text-center text-lg-start">
           <h1 class="hero-title scroll-reveal">A Engenharia da Perfeição: Corte e Gravação a Laser em Fortaleza</h1>
           <p class="hero-desc scroll-reveal">
             Transformamos precisão milimétrica em impacto visual. Oferecemos soluções avançadas de corte e gravação a laser em superfícies de MDF, Acrílico, Madeira e Metais. Desde a personalização de brindes corporativos de luxo até à terceirização de componentes industriais com prazos inegociáveis.
@@ -79,6 +80,113 @@
             <span><i class="fa-solid fa-circle-check"></i> Atendimento imediato</span>
             <span><i class="fa-solid fa-circle-check"></i> Capacidade para pequenos e grandes lotes</span>
             <span><i class="fa-solid fa-circle-check"></i> Entrega em toda a região do Ceará</span>
+          </div>
+        </div>
+        
+        <!-- Coluna Direita: Simulador de Gravação a Laser CNC -->
+        <div class="col-lg-6 d-flex justify-content-center scroll-reveal">
+          <div class="metal-plate-container">
+            <div class="metal-plate-rivets-bottom"></div>
+            
+            <svg id="laser-logo-svg" viewBox="0 0 800 400" width="100%" height="100%">
+              <defs>
+                <!-- Engraved depth shadow -->
+                <filter id="engrave-depth" x="-10%" y="-10%" width="120%" height="120%">
+                  <feOffset dx="1" dy="1" />
+                  <feGaussianBlur stdDeviation="1.5" result="offset-blur" />
+                  <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" />
+                  <feFlood flood-color="black" flood-opacity="0.8" result="color" />
+                  <feComposite operator="in" in="color" in2="inverse" result="shadow" />
+                  <feComposite operator="over" in="shadow" in2="SourceGraphic" />
+                </filter>
+              </defs>
+
+              <!-- Base Paths (Deep Engraved Cooled Look) -->
+              <g id="base-paths" style="opacity: 0.95;">
+                <!-- E -->
+                <path id="e-top" class="laser-path path-base-dark" d="M 115 120 L 185 120" />
+                <path id="e-mid" class="laser-path path-base-gold" d="M 115 180 L 175 180" />
+                <path id="e-bot" class="laser-path path-base-dark" d="M 115 240 L 185 240" />
+
+                <!-- L -->
+                <path id="l-vert" class="laser-path path-base-dark" d="M 225 120 L 225 240" />
+                <path id="l-bot" class="laser-path path-base-dark" d="M 225 240 L 295 240" />
+
+                <!-- O (Emblem) -->
+                <path id="laser-beam" class="laser-path path-base-gold" d="M 400 20 L 400 130" />
+                <path id="circle-l" class="laser-path path-base-dark" d="M 400 130 A 50 50 0 0 0 400 230" />
+                <path id="circle-r" class="laser-path path-base-dark" d="M 400 130 A 50 50 0 0 1 400 230" />
+                
+                <!-- Starburst vertical and horizontal -->
+                <path id="star-v" class="laser-path path-base-gold" d="M 400 150 L 400 210" />
+                <path id="star-h" class="laser-path path-base-gold" d="M 370 180 L 430 180" />
+                <!-- Starburst diagonals -->
+                <path id="star-d1" class="laser-path path-base-gold" d="M 380 160 L 420 200" />
+                <path id="star-d2" class="laser-path path-base-gold" d="M 380 200 L 420 160" />
+
+                <!-- R -->
+                <path id="r-vert" class="laser-path path-base-dark" d="M 505 120 L 505 240" />
+                <path id="r-loop" class="laser-path path-base-dark" d="M 505 120 C 565 120 575 130 575 150 C 575 170 565 180 505 180" />
+                <path id="r-leg" class="laser-path path-base-dark" d="M 505 180 L 565 240" />
+
+                <!-- A -->
+                <path id="a-left" class="laser-path path-base-dark" d="M 650 120 L 615 240" />
+                <path id="a-right" class="laser-path path-base-dark" d="M 650 120 L 685 240" />
+                
+                <!-- Bottom Lines -->
+                <path id="line-l" class="laser-path path-base-gold" d="M 115 310 L 300 310" />
+                <path id="line-r" class="laser-path path-base-gold" d="M 500 310 L 685 310" />
+              </g>
+
+              <!-- Glow Paths (Hot Melted Gold Glow) -->
+              <g id="glow-paths">
+                <!-- E -->
+                <path id="e-top-glow" class="laser-path path-glow" d="M 115 120 L 185 120" />
+                <path id="e-mid-glow" class="laser-path path-glow" d="M 115 180 L 175 180" />
+                <path id="e-bot-glow" class="laser-path path-glow" d="M 115 240 L 185 240" />
+
+                <!-- L -->
+                <path id="l-vert-glow" class="laser-path path-glow" d="M 225 120 L 225 240" />
+                <path id="l-bot-glow" class="laser-path path-glow" d="M 225 240 L 295 240" />
+
+                <!-- O (Emblem) -->
+                <path id="laser-beam-glow" class="laser-path path-glow" d="M 400 20 L 400 130" />
+                <path id="circle-l-glow" class="laser-path path-glow" d="M 400 130 A 50 50 0 0 0 400 230" />
+                <path id="circle-r-glow" class="laser-path path-glow" d="M 400 130 A 50 50 0 0 1 400 230" />
+                
+                <!-- Starburst vertical and horizontal -->
+                <path id="star-v-glow" class="laser-path path-glow" d="M 400 150 L 400 210" />
+                <path id="star-h-glow" class="laser-path path-glow" d="M 370 180 L 430 180" />
+                <!-- Starburst diagonals -->
+                <path id="star-d1-glow" class="laser-path path-glow" d="M 380 160 L 420 200" />
+                <path id="star-d2-glow" class="laser-path path-glow" d="M 380 200 L 420 160" />
+
+                <!-- R -->
+                <path id="r-vert-glow" class="laser-path path-glow" d="M 505 120 L 505 240" />
+                <path id="r-loop-glow" class="laser-path path-glow" d="M 505 120 C 565 120 575 130 575 150 C 575 170 565 180 505 180" />
+                <path id="r-leg-glow" class="laser-path path-glow" d="M 505 180 L 565 240" />
+
+                <!-- A -->
+                <path id="a-left-glow" class="laser-path path-glow" d="M 650 120 L 615 240" />
+                <path id="a-right-glow" class="laser-path path-glow" d="M 650 120 L 685 240" />
+                
+                <!-- Bottom Lines -->
+                <path id="line-l-glow" class="laser-path path-glow" d="M 115 310 L 300 310" />
+                <path id="line-r-glow" class="laser-path path-glow" d="M 500 310 L 685 310" />
+              </g>
+
+              <!-- Polygon inner A triangle -->
+              <polygon id="a-tri" points="640,240 650,215 660,240" style="opacity: 0; fill: #C8A382;" />
+
+              <!-- Text LASER -->
+              <text class="laser-text-gold" x="400" y="318" text-anchor="middle" font-family="'Montserrat', sans-serif" font-weight="600" font-size="20" letter-spacing="15" fill="#C8A382" style="opacity: 0;">LASER</text>
+
+              <!-- Sparks container -->
+              <g id="sparks-container"></g>
+
+              <!-- Laser Spot -->
+              <circle id="laser-spot" r="4" fill="#FFFFFF" stroke="#C8A382" stroke-width="2" style="opacity: 0; filter: drop-shadow(0 0 4px #C8A382) drop-shadow(0 0 8px #FFFFFF);" />
+            </svg>
           </div>
         </div>
       </div>
@@ -526,6 +634,7 @@
   </footer>
 
   <!-- Script logic -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
